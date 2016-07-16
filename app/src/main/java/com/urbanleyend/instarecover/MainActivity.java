@@ -80,9 +80,12 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             url = item.getText().toString();
         }
 
-        String justForDebug = "https://www.instagram.com/p/BH2D_ffjqn_/";//FOTO
-
-        urlHandle(url);
+        //String justForDebug = "https://www.instagram.com/p/BH2D_ffjqn_/";//FOTO
+        //String justForDebug = "https://www.instagram.com/p/BGuFwExn7--/";//FOTO
+        //String justForDebug = "https://www.instagram.com/p/BFbznb8H78A/";//FOTO
+        //String justForDebug = "https://www.instagram.com/p/BFg0El_H73Q/";//FOTO
+        String justForDebug = "https://www.instagram.com/p/BHzvMYzBJKz/";//VIDEO
+        urlHandle(justForDebug);
     }
 
     @Override
@@ -121,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         mViewer.setImage((String) output.get(DownloadWebPageTask.IMAGE));
         mViewer.setUser((String) output.get(DownloadWebPageTask.USERNAME));
         mViewer.setProfileImage((String) output.get(DownloadWebPageTask.PROFILE_PIC));
+        mViewer.isVideo((Boolean) output.get(DownloadWebPageTask.IS_VIDEO));
     }
 
     private void urlHandle(String url) {

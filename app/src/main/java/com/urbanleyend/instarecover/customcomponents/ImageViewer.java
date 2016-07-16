@@ -7,6 +7,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -17,6 +18,7 @@ import com.urbanleyend.instarecover.R;
 public class ImageViewer extends LinearLayout {
 
     private ImageView mImage;
+    private ImageView mImageVideoOverlay;
     private ImageView mProfileImage;
     private TextView mTitle;
 
@@ -33,6 +35,7 @@ public class ImageViewer extends LinearLayout {
         inflater.inflate(R.layout.image_viewer, this);
 
         mImage = (ImageView) findViewById(R.id.imageViewerMainImage);
+        mImageVideoOverlay = (ImageView) findViewById(R.id.imageViewerPlay);
         mProfileImage = (ImageView) findViewById(R.id.imageViewerProfileImage);
         mTitle = (TextView) findViewById(R.id.imageViewerUsername);
     }
@@ -57,6 +60,12 @@ public class ImageViewer extends LinearLayout {
                 .load(imageUrl)
                 .placeholder(R.drawable.loading_animation)
                 .into(mProfileImage);
+    }
+
+    public void isVideo(boolean isVideo) {
+        if (isVideo) {
+            mImageVideoOverlay.setVisibility(View.VISIBLE);
+        }
     }
 
     public Bitmap getImageBitmap() {

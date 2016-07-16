@@ -3,8 +3,10 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
-    <dimen name="user_footer_height">64dp</dimen>
-    <dimen name="profile_image_width">48dp</dimen>
-    <dimen name="profile_image_height">48dp</dimen>
-    <dimen name="profile_image_radius">22dp</dimen>
+    <dimen name="user_footer_height">54dp</dimen>
+    <dimen name="profile_image_width">46dp</dimen>
+    <dimen name="profile_image_height">46dp</dimen>
+    <dimen name="profile_image_radius">23dp</dimen>
+    <dimen name="play_button_width">124dp</dimen>
+    <dimen name="play_button_height">124dp</dimen>
 </resources>
