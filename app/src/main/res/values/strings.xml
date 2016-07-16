@@ -7,6 +7,8 @@
     <string name="video_not_found">Video not found</string>
     <string name="image_saved">Image saved to gallery</string>
     <string name="image_saved_error">Error saving image</string>
+    <string name="video_saved">Video saved to gallery</string>
+    <string name="video_saved_error">Error saving video</string>
     <string name="no_allow_to_save">Not writing permission</string>
     <string name="generic_user">Generic User</string>
 </resources>

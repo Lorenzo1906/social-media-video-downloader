@@ -4,13 +4,16 @@ import android.Manifest;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -24,17 +27,29 @@ import android.widget.Toast;
 
 import com.urbanleyend.instarecover.customcomponents.ImageViewer;
 import com.urbanleyend.instarecover.task.AsyncResponse;
+import com.urbanleyend.instarecover.task.AsyncVideoResponse;
+import com.urbanleyend.instarecover.task.DownloadVideoTask;
 import com.urbanleyend.instarecover.task.DownloadWebPageTask;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Calendar;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements AsyncResponse {
+public class MainActivity extends AppCompatActivity implements AsyncResponse, AsyncVideoResponse {
 
     public final static String APP_FILENAME_PREFIX = R.string.app_name + "Image";
+    public final static String APP_FILENAME_VIDEO_PREFIX = R.string.app_name + "Video";
+    private final int TIMEOUT_CONNECTION = 5000;//5sec
+    private final int TIMEOUT_SOCKET = 30000;//30sec
 
     private ImageViewer mViewer;
     private SharedPreferences prefs;
@@ -63,7 +78,17 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveImage();
+                if (!writeAccepted) {
+                    Toast toast = Toast.makeText(MainActivity.this, R.string.no_allow_to_save, Toast.LENGTH_SHORT);
+                    toast.show();
+                    return;
+                }
+
+                if (mViewer.isVideo()) {
+                    saveVideo();
+                } else {
+                    saveImage();
+                }
             }
         });
     }
@@ -119,7 +144,15 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         mViewer.setImage((String) output.get(DownloadWebPageTask.IMAGE));
         mViewer.setUser((String) output.get(DownloadWebPageTask.USERNAME));
         mViewer.setProfileImage((String) output.get(DownloadWebPageTask.PROFILE_PIC));
-        mViewer.isVideo((Boolean) output.get(DownloadWebPageTask.IS_VIDEO));
+        mViewer.setVideoInfo((Boolean) output.get(DownloadWebPageTask.IS_VIDEO), (String) output.get(DownloadWebPageTask.VIDEO));
+    }
+
+    @Override
+    public void videoProcessFinish(File output) {
+        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(output)));
+
+        Toast toast = Toast.makeText(this, R.string.video_saved, Toast.LENGTH_SHORT);
+        toast.show();
     }
 
     private void urlHandle(String url) {
@@ -134,19 +167,38 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         task.execute(url);
     }
 
+    private void saveVideo() {
+        String videoUrl = mViewer.getVideo();
+
+        saveVideoToExternalStorage(videoUrl);
+    }
+
     private void saveImage() {
         Bitmap bitmap = mViewer.getImageBitmap();
 
         saveImageToExternalStorage(bitmap);
     }
 
-    private void saveImageToExternalStorage(Bitmap image) {
-        if (!writeAccepted) {
-            Toast toast = Toast.makeText(this, R.string.no_allow_to_save, Toast.LENGTH_SHORT);
-            toast.show();
-            return;
-        }
+    private void saveVideoToExternalStorage(String videoUrl) {
+        try {
+            File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES + "/InstaRecover");
+            if (!path.exists()) {
+                path.mkdirs();
+            }
 
+            String filename = APP_FILENAME_VIDEO_PREFIX + Calendar.getInstance().getTimeInMillis()+".mp4";
+
+            DownloadVideoTask task = new DownloadVideoTask();
+            task.delegate = this;
+            task.execute(path.getAbsolutePath(), filename, videoUrl);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast toast = Toast.makeText(this, R.string.video_saved_error, Toast.LENGTH_SHORT);
+            toast.show();
+        }
+    }
+
+    private void saveImageToExternalStorage(Bitmap image) {
         try {
             File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES + "/InstaRecover");
             if (!path.exists()) {

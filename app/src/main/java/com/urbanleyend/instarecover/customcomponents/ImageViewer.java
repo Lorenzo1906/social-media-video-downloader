@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
+import android.util.StringBuilderPrinter;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,9 @@ public class ImageViewer extends LinearLayout {
     private ImageView mImageVideoOverlay;
     private ImageView mProfileImage;
     private TextView mTitle;
+    private boolean isVideo;
+    private String videoUrl;
+
 
     public ImageViewer(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -62,10 +66,20 @@ public class ImageViewer extends LinearLayout {
                 .into(mProfileImage);
     }
 
-    public void isVideo(boolean isVideo) {
+    public void setVideoInfo(boolean isVideo, String videoUrl) {
         if (isVideo) {
             mImageVideoOverlay.setVisibility(View.VISIBLE);
+            this.videoUrl = videoUrl;
+            this.isVideo = isVideo;
         }
+    }
+
+    public String getVideo() {
+        return videoUrl;
+    }
+
+    public boolean isVideo() {
+        return isVideo;
     }
 
     public Bitmap getImageBitmap() {
