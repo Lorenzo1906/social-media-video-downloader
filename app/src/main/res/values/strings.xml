@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">InstaRecover</string>
+    <string name="action_settings">Settings</string>
+    <string name="open_gallery">Open Gallery</string>
+    <string name="invalid_url">Invalid URL</string>
+    <string name="image_not_found">Image not found</string>
+    <string name="video_not_found">Video not found</string>
+    <string name="image_saved">Image saved to gallery</string>
+    <string name="image_saved_error">Error saving image</string>
+    <string name="no_allow_to_save">Not writing permission</string>
+    <string name="generic_user">Generic User</string>
+</resources>
