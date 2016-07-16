@@ -3,7 +3,6 @@ package com.urbanleyend.instarecover.customcomponents;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -13,9 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
 import com.urbanleyend.instarecover.R;
-import com.urbanleyend.instarecover.transformations.CircleTransform;
 
 public class ImageViewer extends LinearLayout {
 
@@ -27,7 +24,6 @@ public class ImageViewer extends LinearLayout {
         super(context, attrs);
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ImageViewer, 0, 0);
-        String titleText = a.getString(R.styleable.ImageViewer_titleText);
         a.recycle();
 
         setOrientation(LinearLayout.HORIZONTAL);
@@ -39,7 +35,6 @@ public class ImageViewer extends LinearLayout {
         mImage = (ImageView) findViewById(R.id.imageViewerMainImage);
         mProfileImage = (ImageView) findViewById(R.id.imageViewerProfileImage);
         mTitle = (TextView) findViewById(R.id.imageViewerUsername);
-        mTitle.setText(titleText);
     }
 
     public ImageViewer(Context context) {

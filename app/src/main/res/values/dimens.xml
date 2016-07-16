@@ -3,7 +3,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
-    <dimen name="profile_image_width">62dp</dimen>
-    <dimen name="profile_image_height">62dp</dimen>
-    <dimen name="profile_image_radius">30dp</dimen>
+    <dimen name="user_footer_height">64dp</dimen>
+    <dimen name="profile_image_width">48dp</dimen>
+    <dimen name="profile_image_height">48dp</dimen>
+    <dimen name="profile_image_radius">22dp</dimen>
 </resources>

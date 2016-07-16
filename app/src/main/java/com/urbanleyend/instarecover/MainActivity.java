@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
 
         String justForDebug = "https://www.instagram.com/p/BH2D_ffjqn_/";//FOTO
 
-        urlHandle(justForDebug);
+        urlHandle(url);
     }
 
     @Override
