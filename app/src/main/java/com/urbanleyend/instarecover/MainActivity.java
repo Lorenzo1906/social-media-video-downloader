@@ -80,12 +80,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             url = item.getText().toString();
         }
 
-        //String justForDebug = "https://www.instagram.com/p/BH2D_ffjqn_/";//FOTO
-        //String justForDebug = "https://www.instagram.com/p/BGuFwExn7--/";//FOTO
-        //String justForDebug = "https://www.instagram.com/p/BFbznb8H78A/";//FOTO
-        //String justForDebug = "https://www.instagram.com/p/BFg0El_H73Q/";//FOTO
-        String justForDebug = "https://www.instagram.com/p/BHzvMYzBJKz/";//VIDEO
-        urlHandle(justForDebug);
+        urlHandle(url);
     }
 
     @Override

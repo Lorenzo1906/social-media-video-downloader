@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <animation-list xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:drawable="@drawable/spinnerframe1" android:duration="50" />
-    <item android:drawable="@drawable/spinnerframe2" android:duration="50" />
-    <item android:drawable="@drawable/spinnerframe3" android:duration="50" />
-    <item android:drawable="@drawable/spinnerframe4" android:duration="50" />
-    <item android:drawable="@drawable/spinnerframe5" android:duration="50" />
-    <item android:drawable="@drawable/spinnerframe6" android:duration="50" />
-    <item android:drawable="@drawable/spinnerframe7" android:duration="50" />
-    <item android:drawable="@drawable/spinnerframe8" android:duration="50" />
+    <item android:drawable="@drawable/spinnerframe1" android:duration="85" />
+    <item android:drawable="@drawable/spinnerframe2" android:duration="85" />
+    <item android:drawable="@drawable/spinnerframe3" android:duration="85" />
+    <item android:drawable="@drawable/spinnerframe4" android:duration="85" />
+    <item android:drawable="@drawable/spinnerframe5" android:duration="85" />
+    <item android:drawable="@drawable/spinnerframe6" android:duration="85" />
+    <item android:drawable="@drawable/spinnerframe7" android:duration="85" />
+    <item android:drawable="@drawable/spinnerframe8" android:duration="85" />
 </animation-list>
