@@ -5,7 +5,6 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
-import android.util.StringBuilderPrinter;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,7 +70,12 @@ public class ImageViewer extends LinearLayout {
             mImageVideoOverlay.setVisibility(View.VISIBLE);
             this.videoUrl = videoUrl;
             this.isVideo = isVideo;
+
+            return;
         }
+
+        mImageVideoOverlay.setVisibility(View.GONE);
+        this.isVideo = isVideo;
     }
 
     public String getVideo() {

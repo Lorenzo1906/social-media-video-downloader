@@ -13,7 +13,6 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class DownloadWebPageTask extends AsyncTask<String, Void, Map<String, Object> > {
 

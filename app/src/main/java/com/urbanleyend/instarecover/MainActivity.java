@@ -13,7 +13,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -31,16 +30,9 @@ import com.urbanleyend.instarecover.task.AsyncVideoResponse;
 import com.urbanleyend.instarecover.task.DownloadVideoTask;
 import com.urbanleyend.instarecover.task.DownloadWebPageTask;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.Calendar;
 import java.util.Map;
 
@@ -48,8 +40,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, As
 
     public final static String APP_FILENAME_PREFIX = R.string.app_name + "Image";
     public final static String APP_FILENAME_VIDEO_PREFIX = R.string.app_name + "Video";
-    private final int TIMEOUT_CONNECTION = 5000;//5sec
-    private final int TIMEOUT_SOCKET = 30000;//30sec
 
     private ImageViewer mViewer;
     private SharedPreferences prefs;
@@ -105,7 +95,15 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, As
             url = item.getText().toString();
         }
 
-        urlHandle(url);
+        //String justForDebug = "https://www.instagram.com/p/BH2D_ffjqn_/";//FOTO
+        //String justForDebug = "https://www.instagram.com/p/BGuFwExn7--/";//FOTO
+        //String justForDebug = "https://www.instagram.com/p/BFbznb8H78A/";//FOTO
+        //String justForDebug = "https://www.instagram.com/p/BFg0El_H73Q/";//FOTO
+        //String justForDebug = "https://www.instagram.com/p/BHzvMYzBJKz/";//VIDEO
+        String justForDebug = "https://www.instagram.com/p/BH75tlRBak9/";//VIDEO
+        //String justForDebug = "https://www.instagram.com/p/BHg5MXthDEm/";//VIDEO
+
+        urlHandle(justForDebug);
     }
 
     @Override
@@ -181,6 +179,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, As
 
     private void saveVideoToExternalStorage(String videoUrl) {
         try {
+            Toast toast = Toast.makeText(this, R.string.video_download, Toast.LENGTH_SHORT);
+            toast.show();
+
             File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES + "/InstaRecover");
             if (!path.exists()) {
                 path.mkdirs();

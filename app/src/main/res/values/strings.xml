@@ -11,4 +11,5 @@
     <string name="video_saved_error">Error saving video</string>
     <string name="no_allow_to_save">Not writing permission</string>
     <string name="generic_user">Generic User</string>
+    <string name="video_download">Video downloading in the background</string>
 </resources>
