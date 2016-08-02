@@ -4,8 +4,8 @@
     tools:context="com.urbanleyend.instarecover.MainActivity">
 
     <item
-        android:id="@+id/action_gallery"
+        android:id="@+id/action_instructions"
         android:orderInCategory="100"
-        android:title="@string/open_gallery"
+        android:title="@string/instructions"
         app:showAsAction="never" />
 </menu>

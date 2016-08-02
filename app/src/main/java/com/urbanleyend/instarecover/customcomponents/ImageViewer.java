@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.urbanleyend.instarecover.R;
@@ -87,8 +88,14 @@ public class ImageViewer extends LinearLayout {
     }
 
     public Bitmap getImageBitmap() {
-        Bitmap bitmap = ((BitmapDrawable) mImage.getDrawable()).getBitmap();
-
-        return bitmap;
+        try{
+            Bitmap bitmap = ((BitmapDrawable) mImage.getDrawable()).getBitmap();
+            return bitmap;
+        } catch (ClassCastException ex) {
+            ex.printStackTrace();
+            Toast toast = Toast.makeText(this.getContext(), R.string.image_saved_error, Toast.LENGTH_SHORT);
+            toast.show();
+            return null;
+        }
     }
 }

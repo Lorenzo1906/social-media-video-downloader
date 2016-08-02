@@ -25,10 +25,12 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.urbanleyend.instarecover.customcomponents.ImageViewer;
+import com.urbanleyend.instarecover.howtouse.WelcomeActivity;
 import com.urbanleyend.instarecover.task.AsyncResponse;
 import com.urbanleyend.instarecover.task.AsyncVideoResponse;
 import com.urbanleyend.instarecover.task.DownloadVideoTask;
 import com.urbanleyend.instarecover.task.DownloadWebPageTask;
+import com.urbanleyend.instarecover.util.PrefManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -42,14 +44,21 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, As
     public final static String APP_FILENAME_VIDEO_PREFIX = R.string.app_name + "Video";
 
     private ImageViewer mViewer;
-    private SharedPreferences prefs;
     private boolean writeAccepted;
+
+    private PrefManager pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        prefs = this.getSharedPreferences("com.urbanleyend.instarecover", Context.MODE_PRIVATE);
+        pref = new PrefManager(this);
+
+        // Checking for first time launch - before calling setContentView()
+        if (pref.isFirstTimeLaunch()) {
+            launchHowToUse();
+            finish();
+        }
 
         if (haveWritePermissions()) {
             writeAccepted = true;
@@ -95,15 +104,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, As
             url = item.getText().toString();
         }
 
-        //String justForDebug = "https://www.instagram.com/p/BH2D_ffjqn_/";//FOTO
-        //String justForDebug = "https://www.instagram.com/p/BGuFwExn7--/";//FOTO
-        //String justForDebug = "https://www.instagram.com/p/BFbznb8H78A/";//FOTO
-        //String justForDebug = "https://www.instagram.com/p/BFg0El_H73Q/";//FOTO
-        //String justForDebug = "https://www.instagram.com/p/BHzvMYzBJKz/";//VIDEO
-        String justForDebug = "https://www.instagram.com/p/BH75tlRBak9/";//VIDEO
-        //String justForDebug = "https://www.instagram.com/p/BHg5MXthDEm/";//VIDEO
-
-        urlHandle(justForDebug);
+        urlHandle(url);
     }
 
     @Override
@@ -116,9 +117,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, As
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_gallery) {
-            Toast toast = Toast.makeText(this, "Do something else, like not open the gallery", Toast.LENGTH_SHORT);
-            toast.show();
+        if (id == R.id.action_instructions) {
+            launchHowToUse();
             return true;
         }
 
@@ -151,6 +151,12 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, As
 
         Toast toast = Toast.makeText(this, R.string.video_saved, Toast.LENGTH_SHORT);
         toast.show();
+    }
+
+    private void launchHowToUse() {
+        pref.setFirstTimeLaunch(false);
+        Intent intent = new Intent(this, WelcomeActivity.class);
+        startActivity(intent);
     }
 
     private void urlHandle(String url) {
@@ -234,9 +240,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, As
         if (hasPermission(permission)) {
             tmpResult = true;
         } else {
-            if (shouldWeAsk(permission)) {
+            if (pref.shouldWeAskWritingPermission(permission)) {
                 requestPermissions(permission);
-                markAsAsked(permission);
+                pref.markAsAskedWritingPermission(permission);
             }
         }
 
@@ -266,14 +272,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, As
         }
 
         return true;
-    }
-
-    private boolean shouldWeAsk(String permission){
-        return (prefs.getBoolean(permission, true));
-    }
-
-    private void markAsAsked(String permission){
-        prefs.edit().putBoolean(permission, false).apply();
     }
 
     private boolean isPreLollipop(){

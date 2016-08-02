@@ -6,9 +6,11 @@
     <string name="image_not_found">Imagen no encontrada</string>
     <string name="invalid_url">URL invalida</string>
     <string name="no_allow_to_save">Sin permiso de escritura</string>
-    <string name="open_gallery">Abrir Galería</string>
     <string name="video_download">Vídeo descargando en segundo plano</string>
     <string name="video_not_found">Video no encontrado</string>
     <string name="video_saved">Video se ha guardado en la galería</string>
     <string name="video_saved_error">Error guardando vídeo</string>
+    <string name="instructions">Instrucciones</string>
+    <string name="image_saved">Imagen guardada a la galería</string>
+    <string name="image_saved_error">Error guardando imagen</string>
 </resources>
