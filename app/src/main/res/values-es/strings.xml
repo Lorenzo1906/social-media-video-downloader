@@ -13,4 +13,13 @@
     <string name="instructions">Instrucciones</string>
     <string name="image_saved">Imagen guardada a la galería</string>
     <string name="image_saved_error">Error guardando imagen</string>
+    <string name="instruction_fifth">5. Cuando la imagen termine de cargar, Toque el boton de descargar</string>
+    <string name="instruction_first">1. Abra la aplicacion de Instagram</string>
+    <string name="instruction_fourth">4. Vuelva a abrir InstaRecover</string>
+    <string name="instruction_second">2. En la foto seleccionada, toque el boton con tres puntos</string>
+    <string name="instruction_third">3. En el menu, toque la opcion \"Copy Share URL\"</string>
+    <string name="next">SIGUIENTE</string>
+    <string name="skip">SALTAR</string>
+    <string name="start">ENTENDIDO</string>
+    <string name="title_activity_welcome">Pantalla de Inicio</string>
 </resources>
