@@ -1,4 +1,4 @@
-package com.urbanleyend.instarecover;
+package com.urbanlegend.instarecover;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

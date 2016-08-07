@@ -1,4 +1,4 @@
-package com.urbanleyend.instarecover.howtouse;
+package com.urbanlegend.instarecover.howtouse;
 
 import android.content.Context;
 import android.content.Intent;
@@ -19,8 +19,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.urbanleyend.instarecover.MainActivity;
-import com.urbanleyend.instarecover.R;
+import com.urbanlegend.instarecover.MainActivity;
+import com.urbanlegend.instarecover.R;
 
 public class WelcomeActivity extends AppCompatActivity {
 

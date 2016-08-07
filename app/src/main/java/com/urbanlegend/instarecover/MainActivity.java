@@ -1,11 +1,9 @@
-package com.urbanleyend.instarecover;
+package com.urbanlegend.instarecover;
 
 import android.Manifest;
 import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -24,13 +22,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.urbanleyend.instarecover.customcomponents.ImageViewer;
-import com.urbanleyend.instarecover.howtouse.WelcomeActivity;
-import com.urbanleyend.instarecover.task.AsyncResponse;
-import com.urbanleyend.instarecover.task.AsyncVideoResponse;
-import com.urbanleyend.instarecover.task.DownloadVideoTask;
-import com.urbanleyend.instarecover.task.DownloadWebPageTask;
-import com.urbanleyend.instarecover.util.PrefManager;
+import com.urbanlegend.instarecover.customcomponents.ImageViewer;
+import com.urbanlegend.instarecover.howtouse.WelcomeActivity;
+import com.urbanlegend.instarecover.task.AsyncResponse;
+import com.urbanlegend.instarecover.task.AsyncVideoResponse;
+import com.urbanlegend.instarecover.task.DownloadVideoTask;
+import com.urbanlegend.instarecover.task.DownloadWebPageTask;
+import com.urbanlegend.instarecover.util.PrefManager;
 
 import java.io.File;
 import java.io.FileOutputStream;

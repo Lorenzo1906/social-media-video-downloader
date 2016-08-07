@@ -1,4 +1,4 @@
-package com.urbanleyend.instarecover.customcomponents;
+package com.urbanlegend.instarecover.customcomponents;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -14,7 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
-import com.urbanleyend.instarecover.R;
+import com.urbanlegend.instarecover.R;
 
 public class ImageViewer extends LinearLayout {
 

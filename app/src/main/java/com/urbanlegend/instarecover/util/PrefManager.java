@@ -1,4 +1,4 @@
-package com.urbanleyend.instarecover.util;
+package com.urbanlegend.instarecover.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;

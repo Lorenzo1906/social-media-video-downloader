@@ -1,4 +1,4 @@
-package com.urbanleyend.instarecover;
+package com.urbanlegend.instarecover;
 
 import org.junit.Test;
 
