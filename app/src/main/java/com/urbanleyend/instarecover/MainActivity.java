@@ -58,13 +58,13 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, As
         if (pref.isFirstTimeLaunch()) {
             launchHowToUse();
             finish();
-        }
-
-        if (haveWritePermissions()) {
-            writeAccepted = true;
-        } else{
-            Toast toast = Toast.makeText(this, R.string.no_allow_to_save, Toast.LENGTH_SHORT);
-            toast.show();
+        } else {
+            if (haveWritePermissions()) {
+                writeAccepted = true;
+            } else{
+                Toast toast = Toast.makeText(this, R.string.no_allow_to_save, Toast.LENGTH_SHORT);
+                toast.show();
+            }
         }
 
         setContentView(R.layout.activity_main);
