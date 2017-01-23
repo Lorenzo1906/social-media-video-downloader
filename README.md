@@ -4,7 +4,7 @@ Is an Android app that receives a link from Instagram and search the url contain
 
 Use JSOUP for html parsing and PICASSO for image downloading and caching
 
-Play Store link: https://play.google.com/store/apps/details?id=com.urbanleyend.instarecover
+Play Store link: https://play.google.com/store/apps/details?id=com.urbanlegend.instarecover
 
 Play Store description:
 
