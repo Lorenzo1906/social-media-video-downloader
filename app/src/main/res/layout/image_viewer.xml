@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/primary_light"
     xmlns:card_view="http://schemas.android.com/apk/res-auto">
 
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/mainImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false">
@@ -37,8 +38,10 @@
     </RelativeLayout>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/userBar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/user_footer_height"
+        android:layout_below="@id/mainImage"
         android:clipToPadding="false">
 
 
@@ -79,4 +82,13 @@
             android:layout_centerVertical="true"
             android:textAppearance="@android:style/TextAppearance.Medium" />
     </RelativeLayout>
-</LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/userBar"
+        android:layout_alignBottom="@+id/userBar"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/download" />
+</RelativeLayout>
