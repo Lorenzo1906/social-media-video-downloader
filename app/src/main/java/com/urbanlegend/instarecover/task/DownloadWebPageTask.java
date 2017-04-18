@@ -1,6 +1,9 @@
 package com.urbanlegend.instarecover.task;
 
 import android.os.AsyncTask;
+import android.os.SystemClock;
+
+import com.urbanlegend.instarecover.model.ImageData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,17 +14,21 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
 public class DownloadWebPageTask extends AsyncTask<String, Void, Map<String, Object> > {
 
     public static final String IMAGE = "image";
+    public static final String IMAGES = "images";
     public static final String VIDEO = "video";
     public static final String USERNAME = "username";
     public static final String PROFILE_PIC = "profilePic";
     public static final String IS_VIDEO = "isVideo";
+    public static final String IS_MULTIPLE = "isMultiple";
     public static final String FILENAME = "filename";
 
     public AsyncResponse delegate = null;
@@ -29,7 +36,7 @@ public class DownloadWebPageTask extends AsyncTask<String, Void, Map<String, Obj
 
     @Override
     protected Map<String, Object> doInBackground(String... urls) {
-        Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> result = new HashMap<>();
 
         for (String tmpUrl : urls) {
             try {
@@ -64,6 +71,7 @@ public class DownloadWebPageTask extends AsyncTask<String, Void, Map<String, Obj
             JSONObject jsonGraph = jsonMedia.getJSONObject("graphql");
             JSONObject jsonMediaContent = jsonGraph.getJSONObject("shortcode_media");
             JSONObject jsonOwner = jsonMediaContent.getJSONObject("owner");
+            JSONObject jsonSideCar = jsonMediaContent.optJSONObject("edge_sidecar_to_children");
 
             result.put(USERNAME, jsonOwner.getString("username"));
             result.put(PROFILE_PIC, jsonOwner.getString("profile_pic_url"));
@@ -74,6 +82,26 @@ public class DownloadWebPageTask extends AsyncTask<String, Void, Map<String, Obj
 
             if (isVideo) {
                 result.put(VIDEO, jsonMediaContent.getString("video_url"));
+            }
+
+            if (jsonSideCar != null) {
+                result.put(IS_MULTIPLE, true);
+                List<ImageData> images = new ArrayList<>();
+                JSONArray edges = jsonSideCar.optJSONArray("edges");
+
+                for (int i = 0; i < edges.length(); i++) {
+                    JSONObject edge = edges.getJSONObject(i);
+                    JSONObject image = edge.getJSONObject("node");
+
+                    ImageData imageData = new ImageData();
+                    imageData.setUrl(image.getString("display_url"));
+                    imageData.setFilename(getImageFilename(image.getString("display_url")));
+                    imageData.setVideo(Boolean.parseBoolean(image.getString("is_video")));
+
+                    images.add(imageData);
+                }
+
+                result.put(IMAGES, images);
             }
         } catch (JSONException e) {
             e.printStackTrace();
