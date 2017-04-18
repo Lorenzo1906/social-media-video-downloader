@@ -13,6 +13,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 public class DownloadWebPageTask extends AsyncTask<String, Void, Map<String, Object> > {
 
@@ -21,6 +22,7 @@ public class DownloadWebPageTask extends AsyncTask<String, Void, Map<String, Obj
     public static final String USERNAME = "username";
     public static final String PROFILE_PIC = "profilePic";
     public static final String IS_VIDEO = "isVideo";
+    public static final String FILENAME = "filename";
 
     public AsyncResponse delegate = null;
 
@@ -51,7 +53,7 @@ public class DownloadWebPageTask extends AsyncTask<String, Void, Map<String, Obj
     }
 
     private Map<String, Object> parseContent(String data) {
-        Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> result = new HashMap<>();
 
         try {
             data = data.replace("window._sharedData = ", "");
@@ -59,15 +61,18 @@ public class DownloadWebPageTask extends AsyncTask<String, Void, Map<String, Obj
             JSONObject jsonEntryData = jsonData.getJSONObject("entry_data");
             JSONArray jsonPostPage = jsonEntryData.optJSONArray("PostPage");
             JSONObject jsonMedia = (JSONObject) jsonPostPage.get(0);
-            JSONObject jsonMediaContent = jsonMedia.getJSONObject("media");
+            JSONObject jsonGraph = jsonMedia.getJSONObject("graphql");
+            JSONObject jsonMediaContent = jsonGraph.getJSONObject("shortcode_media");
             JSONObject jsonOwner = jsonMediaContent.getJSONObject("owner");
 
             result.put(USERNAME, jsonOwner.getString("username"));
             result.put(PROFILE_PIC, jsonOwner.getString("profile_pic_url"));
-            result.put(IMAGE, jsonMediaContent.getString("display_src"));
-            result.put(IS_VIDEO, Boolean.parseBoolean(jsonMediaContent.getString("is_video")));
+            result.put(IMAGE, jsonMediaContent.getString("display_url"));
+            result.put(FILENAME, getImageFilename(jsonMediaContent.getString("display_url")));
+            boolean isVideo = Boolean.parseBoolean(jsonMediaContent.getString("is_video"));
+            result.put(IS_VIDEO, isVideo);
 
-            if ((Boolean) result.get(IS_VIDEO)) {
+            if (isVideo) {
                 result.put(VIDEO, jsonMediaContent.getString("video_url"));
             }
         } catch (JSONException e) {
@@ -75,6 +80,29 @@ public class DownloadWebPageTask extends AsyncTask<String, Void, Map<String, Obj
         }
 
         return result;
+    }
+
+    private String getImageFilename(String url) {
+        String delim = "/";
+        StringTokenizer tokenizer = new StringTokenizer(url, delim, true);
+        String lastToken = "";
+
+        boolean expectDelim = false;
+        while (tokenizer.hasMoreTokens()) {
+            lastToken = tokenizer.nextToken();
+            if (delim.equals(lastToken)) {
+                if (expectDelim) {
+                    expectDelim = false;
+                    continue;
+                } else {
+                    lastToken = null;
+                }
+            }
+
+            expectDelim = true;
+        }
+
+        return lastToken;
     }
 
     @Override
