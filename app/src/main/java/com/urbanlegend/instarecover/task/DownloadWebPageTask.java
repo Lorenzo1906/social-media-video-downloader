@@ -82,6 +82,7 @@ public class DownloadWebPageTask extends AsyncTask<String, Void, Map<String, Obj
 
             if (isVideo) {
                 result.put(VIDEO, jsonMediaContent.getString("video_url"));
+                result.put(FILENAME, getImageFilename(jsonMediaContent.getString("video_url")));
             }
 
             if (jsonSideCar != null) {

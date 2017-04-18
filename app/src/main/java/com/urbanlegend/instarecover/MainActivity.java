@@ -103,9 +103,12 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         }
 
         mViewer.setImage((String) output.get(DownloadWebPageTask.IMAGE));
+        mViewer.setImageUrl((String) output.get(DownloadWebPageTask.IMAGE));
+        mViewer.setFileName((String) output.get(DownloadWebPageTask.FILENAME));
         mViewer.setUser((String) output.get(DownloadWebPageTask.USERNAME));
         mViewer.setProfileImage((String) output.get(DownloadWebPageTask.PROFILE_PIC));
         mViewer.setVideoInfo((Boolean) output.get(DownloadWebPageTask.IS_VIDEO), (String) output.get(DownloadWebPageTask.VIDEO));
+
     }
 
     private void launchHowToUse() {

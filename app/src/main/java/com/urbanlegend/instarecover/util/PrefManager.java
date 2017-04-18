@@ -6,13 +6,11 @@ import android.content.SharedPreferences;
 public class PrefManager {
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
-    private Context context;
 
-    private static final String PREF_NAME = "com.urbanleyend.instarecover";
+    private static final String PREF_NAME = "com.urbanlegend.instarecover";
     private static final String IS_FIRST_TIME_LAUNCH = "IsFirstTimeLaunch";
 
     public PrefManager(Context context) {
-        this.context = context;
         pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         editor = pref.edit();
     }
@@ -34,5 +32,4 @@ public class PrefManager {
     public void markAsAskedWritingPermission(String permission){
         pref.edit().putBoolean(permission, false).apply();
     }
-
 }

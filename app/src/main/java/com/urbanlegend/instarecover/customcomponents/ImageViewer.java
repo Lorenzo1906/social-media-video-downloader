@@ -21,7 +21,9 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.urbanlegend.instarecover.R;
+import com.urbanlegend.instarecover.task.AsyncImageResponse;
 import com.urbanlegend.instarecover.task.AsyncVideoResponse;
+import com.urbanlegend.instarecover.task.DownloadImageTask;
 import com.urbanlegend.instarecover.task.DownloadVideoTask;
 import com.urbanlegend.instarecover.util.PermissionsUtil;
 
@@ -30,7 +32,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.Calendar;
 
-public class ImageViewer extends LinearLayout implements View.OnClickListener, AsyncVideoResponse {
+public class ImageViewer extends LinearLayout implements View.OnClickListener, AsyncVideoResponse, AsyncImageResponse {
 
     private ImageView mImage;
     private ImageView mImageVideoOverlay;
@@ -38,6 +40,8 @@ public class ImageViewer extends LinearLayout implements View.OnClickListener, A
     private TextView mTitle;
     private boolean isVideo;
     private String videoUrl;
+    private String imageUrl;
+    private String fileName;
 
     public final static String APP_FILENAME_PREFIX = R.string.app_name + "Image";
     public final static String APP_FILENAME_VIDEO_PREFIX = R.string.app_name + "Video";
@@ -106,6 +110,22 @@ public class ImageViewer extends LinearLayout implements View.OnClickListener, A
         return isVideo;
     }
 
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     public Bitmap getImageBitmap() {
         try{
             Bitmap bitmap = ((BitmapDrawable) mImage.getDrawable()).getBitmap();
@@ -141,9 +161,7 @@ public class ImageViewer extends LinearLayout implements View.OnClickListener, A
     }
 
     private void saveImage() {
-        Bitmap bitmap = getImageBitmap();
-
-        saveImageToExternalStorage(bitmap);
+        saveImageToExternalStorage();
     }
 
     private void saveVideoToExternalStorage(String videoUrl) {
@@ -156,11 +174,9 @@ public class ImageViewer extends LinearLayout implements View.OnClickListener, A
                 path.mkdirs();
             }
 
-            String filename = APP_FILENAME_VIDEO_PREFIX + Calendar.getInstance().getTimeInMillis()+".mp4";
-
             DownloadVideoTask task = new DownloadVideoTask();
             task.delegate = this;
-            task.execute(path.getAbsolutePath(), filename, videoUrl);
+            task.execute(path.getAbsolutePath(), fileName, videoUrl);
         } catch (Exception e) {
             e.printStackTrace();
             Toast toast = Toast.makeText(this.getContext(), R.string.video_saved_error, Toast.LENGTH_SHORT);
@@ -168,30 +184,23 @@ public class ImageViewer extends LinearLayout implements View.OnClickListener, A
         }
     }
 
-    private void saveImageToExternalStorage(Bitmap image) {
+    private void saveImageToExternalStorage() {
+
         try {
+            Toast toast = Toast.makeText(this.getContext(), R.string.image_download, Toast.LENGTH_SHORT);
+            toast.show();
+
             File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES + "/InstaRecover");
             if (!path.exists()) {
                 path.mkdirs();
             }
 
-            String filename = APP_FILENAME_PREFIX + Calendar.getInstance().getTimeInMillis()+".png";
-            File file = new File(path, filename);
-            file.createNewFile();
-            OutputStream fOut = new FileOutputStream(file);
-
-            image.compress(Bitmap.CompressFormat.PNG, 100, fOut);
-            fOut.flush();
-            fOut.close();
-
-            MediaStore.Images.Media.insertImage(this.getContext().getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
-
-            Toast toast = Toast.makeText(this.getContext(), R.string.image_saved, Toast.LENGTH_SHORT);
-            toast.show();
-
+            DownloadImageTask task = new DownloadImageTask();
+            task.delegate = this;
+            task.execute(path.getAbsolutePath(), getFileName(), getImageUrl());
         } catch (Exception e) {
             e.printStackTrace();
-            Toast toast = Toast.makeText(this.getContext(), R.string.image_saved_error, Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(this.getContext(), R.string.video_saved_error, Toast.LENGTH_SHORT);
             toast.show();
         }
     }
@@ -201,6 +210,14 @@ public class ImageViewer extends LinearLayout implements View.OnClickListener, A
         this.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(output)));
 
         Toast toast = Toast.makeText(this.getContext(), R.string.video_saved, Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
+    @Override
+    public void imageProcessFinish(File output) {
+        this.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(output)));
+
+        Toast toast = Toast.makeText(this.getContext(), R.string.image_saved, Toast.LENGTH_SHORT);
         toast.show();
     }
 }

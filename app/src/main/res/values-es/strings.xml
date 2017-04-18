@@ -7,6 +7,7 @@
     <string name="invalid_url">URL invalida</string>
     <string name="no_allow_to_save">Sin permiso de escritura</string>
     <string name="video_download">Vídeo descargando en segundo plano</string>
+    <string name="image_download">Imagen descargando en segundo plano</string>
     <string name="video_not_found">Video no encontrado</string>
     <string name="video_saved">Video se ha guardado en la galería</string>
     <string name="video_saved_error">Error guardando vídeo</string>

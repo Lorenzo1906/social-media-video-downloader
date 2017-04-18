@@ -12,6 +12,7 @@
     <string name="no_allow_to_save">Not writing permission</string>
     <string name="generic_user">Generic User</string>
     <string name="video_download">Video downloading in the background</string>
+    <string name="image_download">Image downloading in the background</string>
     <string name="instruction_first">1. Open Instagram\'s app</string>
     <string name="instruction_second">2. In the selected photo, tap on the three dots icon</string>
     <string name="instruction_third">3. In the menu, tap on \"Copy Share URL\"</string>
