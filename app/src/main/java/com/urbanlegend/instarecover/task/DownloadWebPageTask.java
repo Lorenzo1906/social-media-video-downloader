@@ -22,14 +22,7 @@ import java.util.StringTokenizer;
 
 public class DownloadWebPageTask extends AsyncTask<String, Void, Map<String, Object> > {
 
-    public static final String IMAGE = "image";
-    public static final String IMAGES = "images";
-    public static final String VIDEO = "video";
-    public static final String USERNAME = "username";
-    public static final String PROFILE_PIC = "profilePic";
-    public static final String IS_VIDEO = "isVideo";
-    public static final String IS_MULTIPLE = "isMultiple";
-    public static final String FILENAME = "filename";
+    public static final String DATA = "data";
 
     public AsyncResponse delegate = null;
 
@@ -61,6 +54,7 @@ public class DownloadWebPageTask extends AsyncTask<String, Void, Map<String, Obj
 
     private Map<String, Object> parseContent(String data) {
         Map<String, Object> result = new HashMap<>();
+        List<ImageData> resultData = new ArrayList<>();
 
         try {
             data = data.replace("window._sharedData = ", "");
@@ -73,21 +67,7 @@ public class DownloadWebPageTask extends AsyncTask<String, Void, Map<String, Obj
             JSONObject jsonOwner = jsonMediaContent.getJSONObject("owner");
             JSONObject jsonSideCar = jsonMediaContent.optJSONObject("edge_sidecar_to_children");
 
-            result.put(USERNAME, jsonOwner.getString("username"));
-            result.put(PROFILE_PIC, jsonOwner.getString("profile_pic_url"));
-            result.put(IMAGE, jsonMediaContent.getString("display_url"));
-            result.put(FILENAME, getImageFilename(jsonMediaContent.getString("display_url")));
-            boolean isVideo = Boolean.parseBoolean(jsonMediaContent.getString("is_video"));
-            result.put(IS_VIDEO, isVideo);
-
-            if (isVideo) {
-                result.put(VIDEO, jsonMediaContent.getString("video_url"));
-                result.put(FILENAME, getImageFilename(jsonMediaContent.getString("video_url")));
-            }
-
             if (jsonSideCar != null) {
-                result.put(IS_MULTIPLE, true);
-                List<ImageData> images = new ArrayList<>();
                 JSONArray edges = jsonSideCar.optJSONArray("edges");
 
                 for (int i = 0; i < edges.length(); i++) {
@@ -97,13 +77,34 @@ public class DownloadWebPageTask extends AsyncTask<String, Void, Map<String, Obj
                     ImageData imageData = new ImageData();
                     imageData.setUrl(image.getString("display_url"));
                     imageData.setFilename(getImageFilename(image.getString("display_url")));
-                    imageData.setVideo(Boolean.parseBoolean(image.getString("is_video")));
+                    imageData.setUserImageUrl(jsonOwner.getString("profile_pic_url"));
+                    imageData.setUsername(jsonOwner.getString("username"));
+                    boolean isVideo = Boolean.parseBoolean(image.getString("is_video"));
+                    imageData.setVideo(isVideo);
+                    if (isVideo) {
+                        imageData.setVideoUrl(image.getString("video_url"));
+                        imageData.setFilename(getImageFilename(image.getString("video_url")));
+                    }
 
-                    images.add(imageData);
+                    resultData.add(imageData);
+                }
+            } else {
+                ImageData tmpDataSingle = new ImageData();
+                tmpDataSingle.setUsername(jsonOwner.getString("username"));
+                tmpDataSingle.setUserImageUrl(jsonOwner.getString("profile_pic_url"));
+                tmpDataSingle.setUrl(jsonMediaContent.getString("display_url"));
+                tmpDataSingle.setFilename(getImageFilename(jsonMediaContent.getString("display_url")));
+                boolean isVideo = Boolean.parseBoolean(jsonMediaContent.getString("is_video"));
+                tmpDataSingle.setVideo(isVideo);
+                if (isVideo) {
+                    tmpDataSingle.setVideoUrl(jsonMediaContent.getString("video_url"));
+                    tmpDataSingle.setFilename(getImageFilename(jsonMediaContent.getString("video_url")));
                 }
 
-                result.put(IMAGES, images);
+                resultData.add(tmpDataSingle);
             }
+
+            result.put(DATA, resultData);
         } catch (JSONException e) {
             e.printStackTrace();
         }

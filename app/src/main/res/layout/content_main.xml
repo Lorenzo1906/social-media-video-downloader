@@ -15,11 +15,12 @@
                 tools:context="com.urbanlegend.instarecover.MainActivity"
                 tools:showIn="@layout/activity_main">
 
-    <com.urbanlegend.instarecover.customcomponents.ImageViewer
-        android:id="@+id/viewer"
+    <ListView
+        android:id="@+id/customListView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="4dp"
-        android:background="@android:color/black"/>
+        android:layout_height="match_parent"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="15dp">
+    </ListView>
 
 </RelativeLayout>

@@ -10,20 +10,22 @@ import android.support.v7.widget.Toolbar;
 import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
-import com.urbanlegend.instarecover.customcomponents.ImageViewer;
+import com.urbanlegend.instarecover.customcomponents.ImageDataArrayAdapter;
 import com.urbanlegend.instarecover.howtouse.WelcomeActivity;
+import com.urbanlegend.instarecover.model.ImageData;
 import com.urbanlegend.instarecover.task.AsyncResponse;
 import com.urbanlegend.instarecover.task.DownloadWebPageTask;
 import com.urbanlegend.instarecover.util.PermissionsUtil;
 import com.urbanlegend.instarecover.util.PrefManager;
 
+import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse {
-
-    private ImageViewer mViewer;
 
     private PrefManager pref;
     private PermissionsUtil permissionsUtil;
@@ -51,8 +53,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        mViewer = (ImageViewer) findViewById(R.id.viewer);
     }
 
     @Override
@@ -90,25 +90,17 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
 
     @Override
     public void processFinish( Map<String, Object> output) {
-        if (!output.containsKey(DownloadWebPageTask.IMAGE)) {
+        if (!output.containsKey(DownloadWebPageTask.DATA)) {
             Toast toast = Toast.makeText(this, R.string.image_not_found, Toast.LENGTH_SHORT);
             toast.show();
             return;
         }
 
-        if ((Boolean) output.get(DownloadWebPageTask.IS_VIDEO) && !output.containsKey(DownloadWebPageTask.VIDEO)) {
-            Toast toast = Toast.makeText(this, R.string.video_not_found, Toast.LENGTH_SHORT);
-            toast.show();
-            return;
-        }
+        List<ImageData> data = (List<ImageData>) output.get(DownloadWebPageTask.DATA);
+        ArrayAdapter<ImageData> adapter = new ImageDataArrayAdapter(this, 0, data);
 
-        mViewer.setImage((String) output.get(DownloadWebPageTask.IMAGE));
-        mViewer.setImageUrl((String) output.get(DownloadWebPageTask.IMAGE));
-        mViewer.setFileName((String) output.get(DownloadWebPageTask.FILENAME));
-        mViewer.setUser((String) output.get(DownloadWebPageTask.USERNAME));
-        mViewer.setProfileImage((String) output.get(DownloadWebPageTask.PROFILE_PIC));
-        mViewer.setVideoInfo((Boolean) output.get(DownloadWebPageTask.IS_VIDEO), (String) output.get(DownloadWebPageTask.VIDEO));
-
+        ListView listView = (ListView) findViewById(R.id.customListView);
+        listView.setAdapter(adapter);
     }
 
     private void launchHowToUse() {
