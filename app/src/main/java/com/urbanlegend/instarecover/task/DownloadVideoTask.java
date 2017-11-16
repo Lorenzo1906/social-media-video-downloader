@@ -2,18 +2,15 @@ package com.urbanlegend.instarecover.task;
 
 import android.os.AsyncTask;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 
 public class DownloadVideoTask extends AsyncTask<String, Void, File> {
-
-    private final int TIMEOUT_CONNECTION = 5000;//5sec
-    private final int TIMEOUT_SOCKET = 30000;//30sec
 
     public AsyncVideoResponse delegate = null;
 
@@ -23,37 +20,53 @@ public class DownloadVideoTask extends AsyncTask<String, Void, File> {
         String filename = strings[1];
         String urlVideo = strings[2];
 
+        InputStream input = null;
+        OutputStream output = null;
+        HttpURLConnection connection = null;
+        File file = new File(path, filename);
         try {
-            File file = new File(path, filename);
             file.createNewFile();
 
             URL url = new URL(urlVideo);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.connect();
 
-            URLConnection connection = url.openConnection();
-
-            connection.setReadTimeout(TIMEOUT_CONNECTION);
-            connection.setConnectTimeout(TIMEOUT_SOCKET);
-
-            InputStream inputStream = connection.getInputStream();
-            BufferedInputStream inStream = new BufferedInputStream(inputStream, 1024 * 5);
-            FileOutputStream outStream = new FileOutputStream(file);
-            byte[] buff = new byte[5 * 1024];
-
-            int len;
-            while ((len = inStream.read(buff)) != -1) {
-                outStream.write(buff,0,len);
+            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                return null;
             }
 
-            outStream.flush();
-            outStream.close();
-            inStream.close();
+            input = connection.getInputStream();
+            output = new FileOutputStream(file);
+
+            byte data[] = new byte[4096];
+            int count;
+            while ((count = input.read(data)) != -1) {
+                if (isCancelled()) {
+                    input.close();
+                    return null;
+                }
+                output.write(data, 0, count);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            try {
+                if (output != null) {
+                    output.close();
+                }
+                if (input != null) {
+                    input.close();
+                }
+            } catch (IOException ignored) {
+            }
+
+            if (connection != null) {
+                connection.disconnect();
+            }
 
             return file;
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-
-        return null;
     }
 
     @Override

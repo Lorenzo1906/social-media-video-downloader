@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -160,9 +159,14 @@ public class ImageDataArrayAdapter extends ArrayAdapter<ImageData> implements As
 
     @Override
     public void videoProcessFinish(File output) {
-        this.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(output)));
+        if (output != null) {
+            this.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(output)));
 
-        Toast toast = Toast.makeText(this.getContext(), R.string.video_saved, Toast.LENGTH_SHORT);
-        toast.show();
+            Toast toast = Toast.makeText(this.getContext(), R.string.video_saved, Toast.LENGTH_SHORT);
+            toast.show();
+        } else {
+            Toast toast = Toast.makeText(this.getContext(), R.string.image_saved_error, Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
 }
