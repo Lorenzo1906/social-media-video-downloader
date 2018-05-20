@@ -40,6 +40,7 @@ public class DownloadWebPageTask extends AsyncTask<String, Void, Map<String, Obj
                     String data = sharedData.data();
                     if (data.contains("window._sharedData")) {
                         result = parseContent(data);
+                        break;
                     }
                 }
             } catch (IOException e) {
@@ -58,6 +59,8 @@ public class DownloadWebPageTask extends AsyncTask<String, Void, Map<String, Obj
 
         try {
             data = data.replace("window._sharedData = ", "");
+
+
             JSONObject jsonData = new JSONObject(data);
             JSONObject jsonEntryData = jsonData.getJSONObject("entry_data");
             JSONArray jsonPostPage = jsonEntryData.optJSONArray("PostPage");
