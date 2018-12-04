@@ -71,9 +71,9 @@ public class ImageDataArrayAdapter extends ArrayAdapter<ImageData> implements As
                 }
 
                 if (image.isVideo()) {
-                    saveVideoToExternalStorage(image.getVideoUrl(), image.getFilename());
+                    saveVideoToExternalStorage(image.getVideoUrl(), image.getFilename(), image.getUsername());
                 } else {
-                    saveImageToExternalStorage(image.getUrl(), image.getFilename());
+                    saveImageToExternalStorage(image.getUrl(), image.getFilename(), image.getUsername());
                 }
             }
         });
@@ -81,12 +81,12 @@ public class ImageDataArrayAdapter extends ArrayAdapter<ImageData> implements As
         return view;
     }
 
-    private void saveVideoToExternalStorage(String videoUrl, String fileName) {
+    private void saveVideoToExternalStorage(String videoUrl, String fileName, String nickname) {
         try {
             Toast toast = Toast.makeText(this.getContext(), R.string.video_download, Toast.LENGTH_SHORT);
             toast.show();
 
-            File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES + "/InstaRecover");
+            File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES + "/InstaRecover/" + nickname);
             if (!path.exists()) {
                 path.mkdirs();
             }
@@ -101,13 +101,13 @@ public class ImageDataArrayAdapter extends ArrayAdapter<ImageData> implements As
         }
     }
 
-    private void saveImageToExternalStorage(String url, String fileName) {
+    private void saveImageToExternalStorage(String url, String fileName, String nickname) {
 
         try {
             Toast toast = Toast.makeText(this.getContext(), R.string.image_download, Toast.LENGTH_SHORT);
             toast.show();
 
-            File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES + "/InstaRecover");
+            File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES + "/InstaRecover/" + nickname);
             if (!path.exists()) {
                 path.mkdirs();
             }
