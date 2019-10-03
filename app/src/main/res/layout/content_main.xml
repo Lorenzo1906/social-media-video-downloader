@@ -15,10 +15,24 @@
                 tools:context="com.urbanlegend.instarecover.MainActivity"
                 tools:showIn="@layout/activity_main">
 
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/textInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/textInputUrl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/url" />
+    </android.support.design.widget.TextInputLayout>
+
     <ListView
         android:id="@+id/customListView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textInput"
         android:divider="@android:color/transparent"
         android:dividerHeight="15dp">
     </ListView>

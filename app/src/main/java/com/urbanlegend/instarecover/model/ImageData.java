@@ -1,5 +1,8 @@
 package com.urbanlegend.instarecover.model;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 public class ImageData {
     private String filename;
     private String url;
@@ -13,7 +16,11 @@ public class ImageData {
     }
 
     public void setFilename(String filename) {
-        this.filename = filename;
+        try {
+            this.filename = getUrlWithoutParameters(filename);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getUrl() {
@@ -54,5 +61,14 @@ public class ImageData {
 
     public void setVideoUrl(String videoUrl) {
         this.videoUrl = videoUrl;
+    }
+
+    private String getUrlWithoutParameters(String url) throws URISyntaxException {
+        URI uri = new URI(url);
+        return new URI(uri.getScheme(),
+                uri.getAuthority(),
+                uri.getPath(),
+                null, // Ignore the query part of the input url
+                uri.getFragment()).toString();
     }
 }

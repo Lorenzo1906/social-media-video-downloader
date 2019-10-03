@@ -23,4 +23,5 @@
     <string name="skip">SALTAR</string>
     <string name="start">ENTENDIDO</string>
     <string name="title_activity_welcome">Pantalla de Inicio</string>
+    <string name="url">url</string>
 </resources>
