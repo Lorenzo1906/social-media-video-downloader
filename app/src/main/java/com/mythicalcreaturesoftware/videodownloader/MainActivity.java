@@ -1,32 +1,33 @@
-package com.urbanlegend.instarecover;
+package com.mythicalcreaturesoftware.videodownloader;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.design.widget.TextInputEditText;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.textfield.TextInputEditText;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.urbanlegend.instarecover.customcomponents.ImageDataArrayAdapter;
-import com.urbanlegend.instarecover.howtouse.WelcomeActivity;
-import com.urbanlegend.instarecover.model.ImageData;
-import com.urbanlegend.instarecover.task.AsyncResponse;
-import com.urbanlegend.instarecover.task.DownloadWebPageTask;
-import com.urbanlegend.instarecover.util.PermissionsUtil;
-import com.urbanlegend.instarecover.util.PrefManager;
+import com.mythicalcreaturesoftware.videodownloader.customcomponents.ImageDataArrayAdapter;
+import com.mythicalcreaturesoftware.videodownloader.model.ImageData;
+import com.mythicalcreaturesoftware.videodownloader.task.AsyncResponse;
+import com.mythicalcreaturesoftware.videodownloader.task.DownloadWebPageTask;
+import com.mythicalcreaturesoftware.videodownloader.util.PermissionsUtil;
+import com.mythicalcreaturesoftware.videodownloader.util.PrefManager;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse {
 
@@ -70,26 +71,42 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() != 0) {
-                    urlHandle(textInputUrl.getText().toString());
-                    textInputUrl.clearFocus();
+                    urlHandle(Objects.requireNonNull(textInputUrl.getText()).toString());
                 }
             }
         });
+
+        final ImageButton button = findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                loadImages();
+            }
+        });
     }
+
 
     @Override
     protected void onResume() {
         super.onResume();
 
+       loadImages();
+    }
+
+    private void loadImages() {
+        String url = getValueFromClipboard();
+        urlHandle(url);
+    }
+
+    private String getValueFromClipboard() {
         String url = "";
 
         ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-        if(clipboard.hasPrimaryClip()== true){
-            ClipData.Item item = clipboard.getPrimaryClip().getItemAt(0);
+        if(clipboard.hasPrimaryClip()){
+            ClipData.Item item = Objects.requireNonNull(clipboard.getPrimaryClip()).getItemAt(0);
             url = item.getText().toString();
         }
 
-        urlHandle(url);
+        return url;
     }
 
     @Override
@@ -121,14 +138,12 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         List<ImageData> data = (List<ImageData>) output.get(DownloadWebPageTask.DATA);
         ArrayAdapter<ImageData> adapter = new ImageDataArrayAdapter(this, 0, data);
 
-        ListView listView = (ListView) findViewById(R.id.customListView);
+        ListView listView = findViewById(R.id.customListView);
         listView.setAdapter(adapter);
     }
 
     private void launchHowToUse() {
         pref.setFirstTimeLaunch(false);
-        Intent intent = new Intent(this, WelcomeActivity.class);
-        startActivity(intent);
     }
 
     private void urlHandle(String url) {

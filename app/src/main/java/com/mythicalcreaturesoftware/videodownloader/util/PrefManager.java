@@ -1,4 +1,4 @@
-package com.urbanlegend.instarecover.util;
+package com.mythicalcreaturesoftware.videodownloader.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -7,7 +7,7 @@ public class PrefManager {
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
 
-    private static final String PREF_NAME = "com.urbanlegend.instarecover";
+    private static final String PREF_NAME = "com.mythicalcreaturesoftware.videodownloader";
     private static final String IS_FIRST_TIME_LAUNCH = "IsFirstTimeLaunch";
 
     public PrefManager(Context context) {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">InstaRecover</string>
+    <string name="app_name">Social Media Video Downloader</string>
     <string name="action_settings">Configuración</string>
     <string name="generic_user">Usuario genérico</string>
     <string name="image_not_found">Imagen no encontrada</string>
@@ -23,5 +23,6 @@
     <string name="skip">SALTAR</string>
     <string name="start">ENTENDIDO</string>
     <string name="title_activity_welcome">Pantalla de Inicio</string>
-    <string name="url">url</string>
+    <string name="url">Pegue url aquí</string>
+    <string name="copy">copy</string>
 </resources>

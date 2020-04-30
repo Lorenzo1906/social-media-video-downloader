@@ -1,4 +1,4 @@
-package com.urbanlegend.instarecover.model;
+package com.mythicalcreaturesoftware.videodownloader.model;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -20,6 +20,16 @@ public class ImageData {
             this.filename = getUrlWithoutParameters(filename);
         } catch (URISyntaxException e) {
             e.printStackTrace();
+        }
+
+        if (this.filename.equals("")){
+            int random = (int)(Math.random() * 50 + 1);
+            String prefix = "image";
+            if (isVideo) {
+                prefix = "video";
+            }
+
+            this.filename = prefix + random;
         }
     }
 

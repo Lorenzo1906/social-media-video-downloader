@@ -12,27 +12,51 @@
                 android:orientation="vertical"
                 android:background="@color/primary"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                tools:context="com.urbanlegend.instarecover.MainActivity"
+                tools:context="com.mythicalcreaturesoftware.videodownloader.MainActivity"
                 tools:showIn="@layout/activity_main">
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/textInput"
+
+
+    <LinearLayout
+        android:id="@+id/topBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="top">
+        android:gravity="top"
+        android:orientation="horizontal">
 
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/textInputUrl"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/url" />
-    </android.support.design.widget.TextInputLayout>
+            android:layout_weight="0.2"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textInputUrl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/url"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <ImageButton
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:src="@drawable/copy"
+            style="?android:attr/borderlessButtonStyle"
+            android:contentDescription="@string/copy" />
+
+    </LinearLayout>
+
 
     <ListView
         android:id="@+id/customListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textInput"
+        android:layout_below="@id/topBar"
         android:divider="@android:color/transparent"
         android:dividerHeight="15dp">
     </ListView>

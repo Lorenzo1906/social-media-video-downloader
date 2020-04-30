@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">InstaRecover</string>
+    <string name="app_name">Social Media Video Downloader</string>
     <string name="action_settings">Settings</string>
     <string name="instructions">Instructions</string>
     <string name="invalid_url">Invalid URL</string>
@@ -22,6 +22,7 @@
     <string name="next">NEXT</string>
     <string name="skip">SKIP</string>
     <string name="start">GOT IT</string>
-    <string name="url">url</string>
+    <string name="url">Paste url here</string>
+    <string name="copy">copy</string>
 
 </resources>

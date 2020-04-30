@@ -1,9 +1,8 @@
-package com.urbanlegend.instarecover.task;
+package com.mythicalcreaturesoftware.videodownloader.task;
 
 import android.os.AsyncTask;
-import android.os.SystemClock;
 
-import com.urbanlegend.instarecover.model.ImageData;
+import com.mythicalcreaturesoftware.videodownloader.model.ImageData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,7 +12,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,28 +30,134 @@ public class DownloadWebPageTask extends AsyncTask<String, Void, Map<String, Obj
         Map<String, Object> result = new HashMap<>();
 
         for (String tmpUrl : urls) {
-            try {
-                Document doc  = Jsoup.connect(tmpUrl).get();
-                Elements sharedDatas = doc.select("script[type=text/javascript]");
-
-                for (Element sharedData : sharedDatas) {
-                    String data = sharedData.data();
-                    if (data.contains("window._sharedData")) {
-                        result = parseContent(data);
-                        break;
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (tmpUrl.contains("tiktok")) {
+                result = processTikTok(tmpUrl);
+            } else if (tmpUrl.contains("instagram")) {
+                result = processInstagram(tmpUrl);
             }
+
         }
 
         return result;
     }
 
-    private Map<String, Object> parseContent(String data) {
+    private Map<String, Object> processTikTok(String url) {
+        Map<String, Object> result = new HashMap<>();
+
+        try {
+            Document doc  = Jsoup.connect(url).get();
+
+            Elements sharedDatas = doc.select("#videoObject");
+            for (Element sharedData : sharedDatas) {
+                String data = sharedData.data();
+                result = parseContentTikTokSecondOption(data);
+            }
+
+            if (result.size() == 0) {
+                sharedDatas = doc.select("script");
+
+                for (Element sharedData : sharedDatas) {
+                    String data = sharedData.data();
+                    if (data.contains("window.__INIT_PROPS__")) {
+                        result = parseContentTikTokFirstOption(data);
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    private Map<String, Object> processInstagram(String url) {
+        Map<String, Object> result = new HashMap<>();
+
+        try {
+            Document doc  = Jsoup.connect(url).get();
+            Elements sharedDatas = doc.select("script[type=text/javascript]");
+
+            for (Element sharedData : sharedDatas) {
+                String data = sharedData.data();
+                if (data.contains("window._sharedData")) {
+                    result = parseContentInstagram(data);
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    private Map<String, Object> parseContentTikTokFirstOption(String data) {
+        Map<String, Object> result = new HashMap<>();
+        List<ImageData> resultData = new ArrayList<>();
+
+        try {
+            ImageData imageData = new ImageData();
+
+            data = data.replace("window.__INIT_PROPS__ = ", "");
+
+            JSONObject jsonData = new JSONObject(data);
+            JSONObject jsonEntryData = jsonData.getJSONObject("/v/:id");
+
+            JSONObject videoData = jsonEntryData.getJSONObject("videoData");
+            JSONObject itemInfo = videoData.getJSONObject("itemInfos");
+            JSONObject video = itemInfo.getJSONObject("video");
+            JSONArray url = video.optJSONArray("urls");
+            JSONArray covers = itemInfo.optJSONArray("covers");
+            JSONObject authorInfo = videoData.getJSONObject("authorInfos");
+
+            imageData.setVideo(true);
+            imageData.setVideoUrl(url.getString(0));
+            imageData.setUrl(covers.getString(0));
+
+            imageData.setUsername(authorInfo.getString("uniqueId"));
+            imageData.setUserImageUrl(authorInfo.optJSONArray("covers").getString(0));
+            imageData.setFilename(getImageFilename(imageData.getVideoUrl()));
+
+            resultData.add(imageData);
+
+            result.put(DATA, resultData);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    private Map<String, Object> parseContentTikTokSecondOption(String data) {
+        Map<String, Object> result = new HashMap<>();
+        List<ImageData> resultData = new ArrayList<>();
+
+        try {
+            ImageData imageData = new ImageData();
+
+            JSONObject jsonData = new JSONObject(data);
+            JSONObject creator = jsonData.getJSONObject("creator");
+            JSONArray thumbnails = jsonData.optJSONArray("thumbnailUrl");
+
+            imageData.setVideo(true);
+            imageData.setVideoUrl(jsonData.getString("contentUrl"));
+            imageData.setUrl(thumbnails.getString(0));
+
+            imageData.setUsername(creator.getString("alternateName"));
+            imageData.setFilename(getImageFilename(imageData.getVideoUrl()));
+
+            resultData.add(imageData);
+
+            result.put(DATA, resultData);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    private Map<String, Object> parseContentInstagram(String data) {
         Map<String, Object> result = new HashMap<>();
         List<ImageData> resultData = new ArrayList<>();
 

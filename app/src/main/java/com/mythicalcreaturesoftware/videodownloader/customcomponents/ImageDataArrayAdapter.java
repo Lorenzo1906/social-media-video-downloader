@@ -1,13 +1,17 @@
-package com.urbanlegend.instarecover.customcomponents;
+package com.mythicalcreaturesoftware.videodownloader.customcomponents;
 
-import android.app.Activity;
+import android.app.Activity;;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +20,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mythicalcreaturesoftware.videodownloader.R;
 import com.squareup.picasso.Picasso;
-import com.urbanlegend.instarecover.R;
-import com.urbanlegend.instarecover.model.ImageData;
-import com.urbanlegend.instarecover.task.AsyncImageResponse;
-import com.urbanlegend.instarecover.task.AsyncVideoResponse;
-import com.urbanlegend.instarecover.task.DownloadImageTask;
-import com.urbanlegend.instarecover.task.DownloadVideoTask;
-import com.urbanlegend.instarecover.util.PermissionsUtil;
+import com.mythicalcreaturesoftware.videodownloader.model.ImageData;
+import com.mythicalcreaturesoftware.videodownloader.task.AsyncImageResponse;
+import com.mythicalcreaturesoftware.videodownloader.task.AsyncVideoResponse;
+import com.mythicalcreaturesoftware.videodownloader.task.DownloadImageTask;
+import com.mythicalcreaturesoftware.videodownloader.task.DownloadVideoTask;
+import com.mythicalcreaturesoftware.videodownloader.util.PermissionsUtil;
 
 import java.io.File;
 import java.util.List;
@@ -86,14 +90,12 @@ public class ImageDataArrayAdapter extends ArrayAdapter<ImageData> implements As
             Toast toast = Toast.makeText(this.getContext(), R.string.video_download, Toast.LENGTH_SHORT);
             toast.show();
 
-            File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES + "/InstaRecover/" + nickname);
-            if (!path.exists()) {
-                path.mkdirs();
-            }
+            boolean isMayorThanQ = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
 
-            DownloadVideoTask task = new DownloadVideoTask();
+            DownloadVideoTask task = new DownloadVideoTask((Activity) context);
             task.delegate = this;
-            task.execute(path.getAbsolutePath(), fileName, videoUrl);
+            task.execute(createFilePath(nickname, Environment.DIRECTORY_MOVIES, "video", fileName, isMayorThanQ), fileName, videoUrl, String.valueOf(isMayorThanQ));
+
         } catch (Exception e) {
             e.printStackTrace();
             Toast toast = Toast.makeText(this.getContext(), R.string.video_saved_error, Toast.LENGTH_SHORT);
@@ -107,19 +109,57 @@ public class ImageDataArrayAdapter extends ArrayAdapter<ImageData> implements As
             Toast toast = Toast.makeText(this.getContext(), R.string.image_download, Toast.LENGTH_SHORT);
             toast.show();
 
-            File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES + "/InstaRecover/" + nickname);
-            if (!path.exists()) {
-                path.mkdirs();
-            }
+            boolean isMayorThanQ = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
 
-            DownloadImageTask task = new DownloadImageTask();
+            DownloadImageTask task = new DownloadImageTask((Activity) context);
             task.delegate = this;
-            task.execute(path.getAbsolutePath(), fileName, url);
+            task.execute(createFilePath(nickname, Environment.DIRECTORY_PICTURES, "image", fileName, isMayorThanQ), fileName, url, String.valueOf(isMayorThanQ));
+
         } catch (Exception e) {
             e.printStackTrace();
             Toast toast = Toast.makeText(this.getContext(), R.string.video_saved_error, Toast.LENGTH_SHORT);
             toast.show();
         }
+    }
+
+    private String createFilePath (String nickname, String env, String type, String filename, boolean isMayorThanQ) {
+        String file = "";
+
+        if (isMayorThanQ) {
+            Uri uri;
+            ContentValues contentValues = new ContentValues();
+
+            if (type.equals("video")) {
+                uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+
+                contentValues.put(MediaStore.Video.Media.DISPLAY_NAME, filename);
+                contentValues.put(MediaStore.Video.Media.DATE_ADDED, System.currentTimeMillis() / 1000);
+                contentValues.put(MediaStore.Video.Media.DATE_TAKEN, System.currentTimeMillis());
+                contentValues.put(MediaStore.Video.Media.RELATIVE_PATH, "Movies/SocialMediaVideoDownloader/" + nickname);
+            } else {
+                uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+
+                contentValues.put(MediaStore.Images.Media.DISPLAY_NAME, filename);
+                contentValues.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis() / 1000);
+                contentValues.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
+                contentValues.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/SocialMediaVideoDownloader/" + nickname);
+            }
+
+            Uri fileUri = context.getContentResolver().insert(uri, contentValues);
+
+            assert fileUri != null;
+            file = fileUri.toString();
+        } else {
+            File fileOld = Environment.getExternalStoragePublicDirectory(env + "/SocialMediaVideoDownloader/" + nickname);
+
+            if (fileOld != null)  {
+                if (fileOld.exists() || fileOld.mkdirs()) {
+                    file = fileOld.getAbsolutePath();
+                }
+            }
+        }
+
+        return file;
     }
 
     private void setImage(String imageUrl) {
