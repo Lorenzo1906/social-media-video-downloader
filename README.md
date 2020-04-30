@@ -1,6 +1,6 @@
-Instarecover
+Social Media Video Downloader
 
-Is an Android app that receives a link from Instagram and search the url containing the desired image. 
+Is an Android app that receives a link from a social media and search the url containing the desired image. 
 
 Use JSOUP for html parsing and PICASSO for image downloading and caching
 
@@ -8,15 +8,15 @@ Play Store link: https://play.google.com/store/apps/details?id=com.urbanlegend.i
 
 Play Store description:
 
-** Instagram Downloader **
-** Instagram Saver **
+** Social Media Downloader **
+** Social Media Saver **
 ** NO ADS **
-** Download from Instagram **
-** Save from Instagram **
-** save instagram photos **
+** Download from Social Media **
+** Save from Social Media **
+** save Social Media photos **
 
 
-InstaRecover allows to download photos from Instagram to your phone in a fast and friendly way. And don't annoy you with ads.
+Social Media Video Downloader allows to download photos from social media to your phone in a fast and friendly way. And don't annoy you with ads.
 
 Features:
 
