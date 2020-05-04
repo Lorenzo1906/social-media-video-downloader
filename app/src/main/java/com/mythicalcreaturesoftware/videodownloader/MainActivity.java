@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     private PrefManager pref;
     private PermissionsUtil permissionsUtil;
 
+    private TextInputEditText textInputUrl;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final TextInputEditText textInputUrl = findViewById(R.id.textInputUrl);
+        textInputUrl = findViewById(R.id.textInputUrl);
         textInputUrl.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -94,13 +96,14 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
 
     private void loadImages() {
         String url = getValueFromClipboard();
-        urlHandle(url);
+        textInputUrl.setText(url);
     }
 
     private String getValueFromClipboard() {
         String url = "";
 
         ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+        assert clipboard != null;
         if(clipboard.hasPrimaryClip()){
             ClipData.Item item = Objects.requireNonNull(clipboard.getPrimaryClip()).getItemAt(0);
             url = item.getText().toString();
@@ -118,11 +121,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
-        if (id == R.id.action_instructions) {
-            launchHowToUse();
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }

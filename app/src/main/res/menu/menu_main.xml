@@ -3,9 +3,4 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.urbanleyend.instarecover.MainActivity">
 
-    <item
-        android:id="@+id/action_instructions"
-        android:orderInCategory="100"
-        android:title="@string/instructions"
-        app:showAsAction="never" />
 </menu>
