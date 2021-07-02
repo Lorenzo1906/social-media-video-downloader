@@ -3,6 +3,7 @@ package com.mythicalcreaturesoftware.videodownloader.task;
 import android.os.AsyncTask;
 
 import com.mythicalcreaturesoftware.videodownloader.model.ImageData;
+import com.mythicalcreaturesoftware.videodownloader.util.CookieManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,7 +46,10 @@ public class DownloadWebPageTask extends AsyncTask<String, Void, Map<String, Obj
         Map<String, Object> result = new HashMap<>();
 
         try {
-            Document doc  = Jsoup.connect(url).get();
+            Document doc  = Jsoup.connect(url).userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
+                    .referrer("https://www.tiktok.com/")
+                    .cookies(CookieManager.getInstance().getCookies())
+                    .get();
 
             Elements sharedDatas = doc.select("#videoObject");
             for (Element sharedData : sharedDatas) {
@@ -57,8 +61,8 @@ public class DownloadWebPageTask extends AsyncTask<String, Void, Map<String, Obj
                 sharedDatas = doc.select("script");
 
                 for (Element sharedData : sharedDatas) {
-                    String data = sharedData.data();
-                    if (data.contains("window.__INIT_PROPS__")) {
+                    if (sharedData.id().equals("__NEXT_DATA__")) {
+                        String data = sharedData.data();
                         result = parseContentTikTokFirstOption(data);
                         break;
                     }
@@ -99,25 +103,21 @@ public class DownloadWebPageTask extends AsyncTask<String, Void, Map<String, Obj
         try {
             ImageData imageData = new ImageData();
 
-            data = data.replace("window.__INIT_PROPS__ = ", "");
-
             JSONObject jsonData = new JSONObject(data);
-            JSONObject jsonEntryData = jsonData.getJSONObject("/v/:id");
-
-            JSONObject videoData = jsonEntryData.getJSONObject("videoData");
-            JSONObject itemInfo = videoData.getJSONObject("itemInfos");
-            JSONObject video = itemInfo.getJSONObject("video");
-            JSONArray url = video.optJSONArray("urls");
-            JSONArray covers = itemInfo.optJSONArray("covers");
-            JSONObject authorInfo = videoData.getJSONObject("authorInfos");
+            JSONObject jsonEntryData = jsonData.getJSONObject("props");
+            JSONObject pageProps = jsonEntryData.getJSONObject("pageProps");
+            JSONObject itemInfo = pageProps.getJSONObject("itemInfo");
+            JSONObject itemStruct  = itemInfo.getJSONObject("itemStruct");
+            JSONObject video  = itemStruct.getJSONObject("video");
+            JSONObject author  = itemStruct.getJSONObject("author");
 
             imageData.setVideo(true);
-            imageData.setVideoUrl(url.getString(0));
-            imageData.setUrl(covers.getString(0));
+            imageData.setVideoUrl(video.getString("playAddr"));
+            imageData.setUrl(video.getString("cover"));
 
-            imageData.setUsername(authorInfo.getString("uniqueId"));
-            imageData.setUserImageUrl(authorInfo.optJSONArray("covers").getString(0));
-            imageData.setFilename(getImageFilename(imageData.getVideoUrl()));
+            imageData.setUsername(author.getString("nickname"));
+            imageData.setUserImageUrl(author.getString("avatarMedium"));
+            imageData.setFilename(author.getString("uniqueId")+"-"+video.getString("id")+"."+video.getString("format"));
 
             resultData.add(imageData);
 

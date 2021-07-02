@@ -79,11 +79,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         });
 
         final ImageButton button = findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                loadImages();
-            }
-        });
+        button.setOnClickListener(v -> loadImages());
     }
 
 

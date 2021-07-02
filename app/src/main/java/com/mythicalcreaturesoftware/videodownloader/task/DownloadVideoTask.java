@@ -5,6 +5,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.ParcelFileDescriptor;
 
+import com.mythicalcreaturesoftware.videodownloader.util.CookieManager;
+
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
@@ -14,6 +16,7 @@ import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.stream.Collectors;
 
 public class DownloadVideoTask extends AsyncTask<String, Void, File> {
 
@@ -42,6 +45,14 @@ public class DownloadVideoTask extends AsyncTask<String, Void, File> {
 
             URL url = new URL(urlVideo);
             connection = (HttpURLConnection) url.openConnection();
+
+            String cookies = CookieManager.getInstance().getCookies().entrySet()
+                    .stream()
+                    .map(entry -> entry.getKey() + "=" + entry.getValue())
+                    .collect(Collectors.joining(";"));
+            connection.setRequestProperty("Cookie", cookies);
+            connection.setRequestProperty("Referer", "https://www.tiktok.com/");
+
             connection.connect();
 
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
